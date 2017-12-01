@@ -30,7 +30,8 @@ class VlcDriver(val inputDir: File, val outputDir: File) {
     }.toMap
   }
 
-  def run(onError: Throwable => Unit): Unit = {
+  def printOnError(t: Throwable) = println(Util.throwableToString(t))
+  def run(onError: Throwable => Unit = printOnError): Unit = {
 
     def conv(in: String, out: String): Unit = {
       val args = Seq(
