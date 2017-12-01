@@ -19,6 +19,7 @@ class ArgChecks(val args: Args) {
     case Args(inputDir, outputDir) if inputDir == outputDir => {
       logger.warn("Warning: input and output directories are the same.")
     }
+    case _ => {}
   }
 
   def apply() = sameFile
