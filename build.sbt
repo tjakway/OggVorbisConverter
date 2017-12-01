@@ -12,6 +12,10 @@ libraryDependencies ++=
       )
 
 
+//set the main class
+//see https://stackoverflow.com/questions/6467423/how-to-set-main-class-in-build
+mainClass in Compile := Some("com.jakway.tools.ConvMusicOggVorbis")
+
 //ignore anything named snippets.scala
 excludeFilter in unmanagedSources := HiddenFileFilter || "snippets.scala"
 
