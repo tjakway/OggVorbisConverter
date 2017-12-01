@@ -13,8 +13,8 @@ class MusicFileVisitor extends java.nio.file.FileVisitor[Path] {
   case class MusicFileVisitorException(msg: String) extends RuntimeException(msg)
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
-  override def postVisitDirectory(t: Path, e: IOException): FileVisitResult = {}
-  override def preVisitDirectory(t: Path, basicFileAttributes: BasicFileAttributes): FileVisitResult = {}
+  override def postVisitDirectory(t: Path, e: IOException): FileVisitResult = FileVisitResult.CONTINUE
+  override def preVisitDirectory(t: Path, basicFileAttributes: BasicFileAttributes): FileVisitResult = FileVisitResult.CONTINUE
 
   override def visitFileFailed(t: Path, e: IOException): FileVisitResult = {
     logger.warn(s"MusicFileVisitor.visitFileFailed called for ${t.toFile.getAbsolutePath} with IOException ${Util.throwableToString(e)}")

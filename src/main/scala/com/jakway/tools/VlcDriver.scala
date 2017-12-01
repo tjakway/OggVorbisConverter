@@ -38,7 +38,7 @@ class VlcDriver(val inputDir: File, val outputDir: File) {
         "-vvv",
         in,
         "--sout",
-        s"#transcode{acodec=vorb}:standard{mux=ogg,dst=\"$out\",access=file}",
+        "#transcode{acodec=vorb}:standard{mux=ogg,dst=\"" + out + "\",access=file}",
         "vlc://quit"
       )
 
