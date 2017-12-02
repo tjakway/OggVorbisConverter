@@ -7,7 +7,12 @@ import com.jakway.tools.Runner.RunOutput
 
 import scala.util.Try
 
-class VlcDriver(val inputDir: File, val outputDir: File) {
+object VlcDriver {
+  val commandName = "vlc"
+}
+
+class VlcDriver(val inputDir: File, val outputDir: File)
+  extends CheckCommandExists(VlcDriver.commandName) {
   case class VlcDriverException(m: String) extends RuntimeException(m)
 
   val outputExtension = ".ogg"
@@ -45,7 +50,7 @@ class VlcDriver(val inputDir: File, val outputDir: File) {
       )
 
 
-      Runner.run("vlc", args) match {
+      Runner.run(VlcDriver.commandName, args) match {
         case Left(r: RunOutput) => onError(r)
         case Right(value) => {}
       }
