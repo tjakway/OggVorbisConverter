@@ -3,50 +3,101 @@ package com.jakway.util.runner
 import java.io.{File, IOException}
 
 import scala.sys.process.{Process, ProcessLogger}
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
+
+
+object RunOutput {
+
+  /**
+    * @param runOutputSubclass
+    * @param expectedExitCodeMsg a string describing the expected exit code value or range of values
+    * @param actualExitCode
+    * @tparam A
+    */
+  case class RunnerImplementationException[A](runOutputSubclass: Class[A],
+                                              expectedExitCodeMsg:  String,
+                                              actualExitCode:    Int)
+    extends RuntimeException(s"Error in Runner implementation: subclass ${runOutputSubclass.getCanonicalName}" +
+      s" should only be instantiated with exit code $expectedExitCodeMsg but had actual exit code $actualExitCode")
+
+  def assertExitCode[A](thisClass: Class[A], check: Int => Boolean, expectedMsg: String, actual: Int) = {
+    if(!check(actual)) {
+      throw RunnerImplementationException(thisClass, expectedMsg, actual)
+    }
+  }
+}
+
+sealed trait RunOutput {
+  val progName: String
+  val args: Seq[String]
+  val stdout: String
+  val stderr: String
+
+  //equivalent to Try.get
+  def get(): ProgramOutput = this match {
+    case p: ProgramOutput => p
+    case e: ExceptionOnRun => throw e
+  }
+
+  def toTry: Try[ProgramOutput] = Try(get())
+}
+
+/**
+  * superclass for non-exceptional output
+  */
+abstract class ProgramOutput(override val progName: String, override val args: Seq[String],
+                             override val stdout: String, override val stderr: String,
+                             val exitCode: Int)
+  extends RunOutput
+{
+  //force subclasses to override the relevant parameters of the exit code check
+  def check: Int => Boolean
+  val expectedMsg: String
+
+  RunOutput.assertExitCode(getClass(), check, expectedMsg, exitCode)
+}
+
+case class NonzeroExitCode(override val progName: String, override val args: Seq[String],
+                       override val stdout: String, override val stderr: String,
+                       override val exitCode: Int)
+  extends ProgramOutput(progName, args, stdout, stderr, exitCode)
+{
+  override def check = _ != 0
+  override val expectedMsg = "nonzero exit code"
+}
+
+//used to represent success
+case class ZeroExitCode(override val progName: String, override val args: Seq[String],
+                        override val stdout: String, override val stderr: String,
+                        override val exitCode: Int)
+  extends ProgramOutput(progName, args, stdout, stderr, exitCode)
+{
+
+  override def check = _ == 0
+  override val expectedMsg = "zero exit code"
+}
+
+//exceptional subclasses
+
+class ExceptionOnRun(override val progName: String, override val args: Seq[String],
+                     override val stdout: String, override val stderr: String,
+                     val e: Exception)
+  extends RuntimeException(s"Error while running $progName with args" +
+    s" $args\nstdout: $stdout\nstderr: $stderr", e) with RunOutput
+
+case class IOExceptionOnRun(override val progName: String, override val args: Seq[String],
+                       override val stdout: String, override val stderr: String,
+                       override val e: IOException)
+  extends ExceptionOnRun(progName, args, stdout, stderr, e)
+
+
+
 
 object Runner {
 
-  sealed trait RunOutput {
-    val progName: String
-    val args: Seq[String]
 
-    //equivalent to Try.get
-    def get(): ProgramOutput = this match {
-      case p: ProgramOutput => p
-      case e: ExceptionOnRun => throw e
-    }
-
-    def toTry: Try[ProgramOutput] = Try(get())
-  }
-
-  class ProgramOutput(override val progName: String, override val args: Seq[String],
-                      val stdout: String, val stderr: String, val exitCode: Int)
-    extends RuntimeException(s"Error while running $progName with args" +
-      s" $args\nstdout: $stdout\nstderr: $stderr") with RunOutput
-
-  case class BadExitCode(override val progName: String, override val args: Seq[String],
-                         override val stdout: String, override val stderr: String,
-                         override val exitCode: Int)
-    extends ProgramOutput(progName, args, stdout, stderr, exitCode)
-  {
-
-  }
-
-  //used to represent success
-  case class ZeroExitCode(override val progName: String, override val args: Seq[String],
-                         override val stdout: String, override val stderr: String,
-                         override val exitCode: Int)
-    extends ProgramOutput(progName, args, stdout, stderr, exitCode)
-
-  class ExceptionOnRun(override val progName: String, override val args: Seq[String],
-                       val e: Exception)
-    extends RuntimeException(e) with RunOutput
-
-  case class IOExceptionOnRun(override val progName: String, override val args: Seq[String],
-                              e: IOException)
-    extends ExceptionOnRun(progName, args, e)
-
+  //TODO: add cwd to RunOutput & subclasses
+  //we have it, might as well include it
   def run(progName: String, args: Seq[String], cwd: Option[File] = None): RunOutput
   = {
     var stdout = ""
@@ -58,23 +109,29 @@ object Runner {
     def appendStderr(line: String): Unit = {
       stderr = stderr + line + "\n"
     }
-    val processLogger = ProcessLogger(appendStdout, appendStderr)
 
-    val exitCode = Try {
-    //don't connect stdin
-    Process(Seq(progName) ++ args, cwd)
-      .run(processLogger, false)
-      //block until it returns
-      .exitValue()
-    } recover {
-      case e: IOException =>
+    //make it lazy to guarantee no exceptions before this point
+    lazy val processLogger = ProcessLogger(appendStdout, appendStderr)
+
+    //only the final parameter of the subclasses of RunOutput varies--
+    //either an exception or an exit code
+    val mkRunOutput: (String, Seq[String], String, String) => RunOutput = Try {
+
+      //run the program
+      //don't connect stdin
+      Process(Seq(progName) ++ args, cwd)
+        .run(processLogger, false)
+        //block until it returns
+        .exitValue()
+    } match {
+      case Failure(e: IOException) => IOExceptionOnRun(_, _, _, _, e)
+      case Failure(e: Exception) =>   new ExceptionOnRun(_, _, _, _, e)
+      case Success(exitCode)
+          if exitCode == 0       =>   NonzeroExitCode(_, _, _, _, exitCode)
+      case Success(exitCode)
+          if exitCode != 0       =>   ZeroExitCode(_, _, _, _, exitCode)
     }
 
-
-    if(exitCode == 0) {
-      Right(Unit)
-    } else {
-      Left(RunOutput(progName, args, stdout, stderr, exitCode))
-    }
+    mkRunOutput(progName, args, stdout, stderr)
   }
 }
