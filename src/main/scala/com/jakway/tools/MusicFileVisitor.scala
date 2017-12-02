@@ -8,7 +8,7 @@ import org.slf4j.{Logger, LoggerFactory}
 
 class MusicFileVisitor extends java.nio.file.FileVisitor[Path] {
   import scala.collection.mutable
-  val accMusicFiles: mutable.Seq[String] = mutable.Seq()
+  val accMusicFiles: mutable.ArrayBuffer[String] = mutable.ArrayBuffer.empty[String]
 
   case class MusicFileVisitorException(msg: String) extends RuntimeException(msg)
   val logger: Logger = LoggerFactory.getLogger(getClass())
@@ -26,7 +26,7 @@ class MusicFileVisitor extends java.nio.file.FileVisitor[Path] {
   override def visitFile(t: Path, basicFileAttributes: BasicFileAttributes): FileVisitResult = {
     //if it's a music file, add it to our list
     if(isMusicFile(t) && !t.toFile.isDirectory) {
-      accMusicFiles + (t.toFile.getAbsolutePath)
+      accMusicFiles += (t.toFile.getAbsolutePath)
       FileVisitResult.CONTINUE
     }
     else {

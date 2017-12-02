@@ -26,7 +26,8 @@ class VlcDriver(val inputDir: File, val outputDir: File) {
 
   def mapInputToOutput(in: Seq[String]): Try[Map[String, String]] = Try {
     in.map { thisFile =>
-      (thisFile, Util.removeFilenameExtension(new File(thisFile).getName) + outputExtension)
+      (thisFile, new File(outputDir,
+        Util.removeFilenameExtension(new File(thisFile).getName) + outputExtension).getAbsolutePath)
     }.toMap
   }
 
