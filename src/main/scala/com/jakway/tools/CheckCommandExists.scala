@@ -16,7 +16,7 @@ object CheckCommandExists {
           s"stdout: $stdout, stderr: $stderr")
         throw CommandNotFoundException(commandName)
       }
-      case Right(_) => {}
+      case Right(_) => Try({})
     }
   }
 }
@@ -28,7 +28,7 @@ object CheckCommandExists {
   */
 class CheckCommandExists(val commandName: String) {
   val logger: Logger = LoggerFactory.getLogger(getClass())
-  def runOrThrow = CheckCommandExists.runOrThrow(logger)
+  def runOrThrow = CheckCommandExists.runOrThrow(logger) _
 
   //if any of the following succeed, the program exists
   runOrThrow(commandName, Seq("--help"))
