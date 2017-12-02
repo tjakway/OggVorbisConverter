@@ -1,6 +1,7 @@
 package com.jakway.tools
 
-import com.jakway.tools.Runner.RunOutput
+import com.jakway.util.runner.Runner
+import com.jakway.util.runner.Runner.RunOutput
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Try

@@ -1,9 +1,9 @@
-package com.jakway.tools
+package com.jakway.util.runner
 
 import java.io.{File, IOException}
 
 import scala.sys.process.{Process, ProcessLogger}
-import scala.util.{Failure, Success, Try}
+import scala.util.Try
 
 object Runner {
 

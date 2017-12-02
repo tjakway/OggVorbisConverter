@@ -3,7 +3,8 @@ package com.jakway.tools
 import java.io.File
 import java.nio.file.Files
 
-import com.jakway.tools.Runner.RunOutput
+import com.jakway.util.runner.Runner
+import com.jakway.util.runner.Runner.RunOutput
 
 import scala.util.Try
 
