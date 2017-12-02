@@ -37,5 +37,5 @@ class CheckCommandExists(val commandName: String) {
     }
     .recover {
       case _: Throwable => runOrThrow(commandName, Seq("-help"))
-    }
+    }.get
 }
