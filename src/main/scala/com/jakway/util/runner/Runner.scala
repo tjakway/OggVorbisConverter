@@ -33,13 +33,18 @@ sealed trait RunOutput {
   val stdout: String
   val stderr: String
 
-  //equivalent to Try.get
-  def get(): ProgramOutput = this match {
-    case p: ProgramOutput => p
-    case e: ExceptionOnRun => throw e
+  //equivalent to toTry.get()
+  def get(): ProgramOutput = toEither match {
+    case Right(x) => x
+    case Left(e) => throw e
   }
 
   def toTry: Try[ProgramOutput] = Try(get())
+
+  def toEither: Either[ExceptionOnRun, ProgramOutput] = this match {
+    case p: ProgramOutput => Right(p)
+    case e: ExceptionOnRun => Left(e)
+  }
 }
 
 /**
