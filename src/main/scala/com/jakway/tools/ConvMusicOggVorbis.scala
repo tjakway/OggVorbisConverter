@@ -1,13 +1,8 @@
 package com.jakway.tools
 
-import java.io.{File, IOException, PrintWriter, StringWriter}
-import java.nio.file.{FileVisitResult, Files, Path}
-import java.nio.file.attribute.BasicFileAttributes
+import java.io.File
 
-import org.slf4j
 import org.slf4j.{Logger, LoggerFactory}
-
-import scala.util.{Failure, Success, Try}
 
 case class Args(inputDir: File, outputDir: File)
 
