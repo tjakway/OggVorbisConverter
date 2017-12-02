@@ -4,9 +4,8 @@ import java.io.File
 import java.nio.file.Files
 
 import com.jakway.util.runner.Runner
-import com.jakway.util.runner.Runner.RunOutput
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 object VlcDriver {
   val commandName = "vlc"
@@ -51,9 +50,9 @@ class VlcDriver(val inputDir: File, val outputDir: File)
       )
 
 
-      Runner.run(VlcDriver.commandName, args) match {
-        case Left(r: RunOutput) => onError(r)
-        case Right(value) => {}
+      Runner.run(VlcDriver.commandName, args).toTry match {
+        case Failure(t: Throwable) => onError(t)
+        case Success(value) => {}
       }
     }
 

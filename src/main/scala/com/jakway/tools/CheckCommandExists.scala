@@ -1,7 +1,6 @@
 package com.jakway.tools
 
-import com.jakway.util.runner.Runner
-import com.jakway.util.runner.Runner.RunOutput
+import com.jakway.util.runner.{ExceptionOnRun, Runner}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.Try
@@ -11,10 +10,10 @@ case class CommandNotFoundException(val commandName: String)
 
 object CheckCommandExists {
   def runOrThrow(logger: Logger)(commandName: String, args: Seq[String]): Try[Unit] = {
-    Runner.run(commandName, args) match {
-      case Left(RunOutput(_, _, stdout, stderr, exitCode)) => {
-        logger.warn(s"Error while executing command `$commandName $args`, exit code: $exitCode" +
-          s"stdout: $stdout, stderr: $stderr")
+    Runner.run(commandName, args).toEither match {
+      case Left(e: ExceptionOnRun) => {
+        logger.warn(s"Error while executing command `$commandName $args`," +
+          s"stdout: ${e.stdout}, stderr: ${e.stderr}")
         throw CommandNotFoundException(commandName)
       }
       case Right(_) => Try({})
