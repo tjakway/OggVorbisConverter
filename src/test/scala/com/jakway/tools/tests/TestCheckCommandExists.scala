@@ -1,6 +1,5 @@
 package com.jakway.tools.tests
 
-import com.jakway.tools.CommandNotFoundException
 import com.jakway.util.runner.{CheckCommandExists, CommandNotFoundException}
 import org.scalatest.FlatSpec
 

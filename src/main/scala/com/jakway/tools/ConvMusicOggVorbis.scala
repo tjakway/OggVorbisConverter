@@ -2,7 +2,7 @@ package com.jakway.tools
 
 import java.io.File
 
-import com.jakway.tools.drivers.VlcDriver
+import com.jakway.tools.drivers.{MainDriver, VlcDriver}
 import org.slf4j.{Logger, LoggerFactory}
 
 case class Args(inputDir: File, outputDir: File)
@@ -30,7 +30,7 @@ object ConvMusicOggVorbis {
       val convArgs = Args(new File(args(0)), new File(args(1)))
       new ArgChecks(convArgs).apply()
 
-      new VlcDriver(convArgs.inputDir, convArgs.outputDir)
+      new MainDriver(convArgs.inputDir, convArgs.outputDir)
         .run()
     }
   }
