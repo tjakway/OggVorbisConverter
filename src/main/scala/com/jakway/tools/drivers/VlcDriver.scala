@@ -1,9 +1,10 @@
-package com.jakway.tools
+package com.jakway.tools.drivers
 
 import java.io.File
 import java.nio.file.Files
 
-import com.jakway.util.runner.Runner
+import com.jakway.tools.{MusicFileVisitor, Util}
+import com.jakway.util.runner.{CheckCommandExists, Runner}
 
 import scala.util.{Failure, Success, Try}
 

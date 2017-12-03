@@ -2,6 +2,7 @@ package com.jakway.tools
 
 import java.io.File
 
+import com.jakway.tools.drivers.VlcDriver
 import org.slf4j.{Logger, LoggerFactory}
 
 case class Args(inputDir: File, outputDir: File)
