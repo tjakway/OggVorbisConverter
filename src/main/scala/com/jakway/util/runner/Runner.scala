@@ -27,6 +27,16 @@ object RunOutput {
   }
 }
 
+case class RunnerException(msg: String, t: Option[Throwable] = None)
+  extends RuntimeException(msg)
+{
+  //call initCause if we were passed a Throwable
+  t match {
+    case Some(t) => initCause(t)
+    case None => {}
+  }
+}
+
 sealed trait RunOutput {
   val progName: String
   val args: Seq[String]
@@ -36,7 +46,11 @@ sealed trait RunOutput {
   //equivalent to toTry.get()
   def get(): ProgramOutput = toEither match {
     case Right(x) => x
-    case Left(e) => throw e
+    case Left(e) => {
+      e.throwThis()
+      //dummy value--we just threw an exception
+      null
+    }
   }
 
   def toTry: Try[ProgramOutput] = Try(get())
@@ -45,6 +59,12 @@ sealed trait RunOutput {
     case p: ProgramOutput => Right(p)
     case e: ExceptionOnRun => Left(e)
   }
+
+  def throwThis(): Unit
+
+  protected def throwSelf(e: Option[Exception]): Unit =
+    throw RunnerException(s"Error while running $progName with args" +
+      s" $args\nstdout: $stdout\nstderr: $stderr", e)
 }
 
 /**
@@ -52,14 +72,15 @@ sealed trait RunOutput {
   */
 abstract class ProgramOutput(override val progName: String, override val args: Seq[String],
                              override val stdout: String, override val stderr: String,
-                             val exitCode: Int)
-  extends RunOutput
+                             val exitCode: Int) extends RunOutput
 {
   //force subclasses to override the relevant parameters of the exit code check
   def check: Int => Boolean
   val expectedMsg: String
 
   RunOutput.assertExitCode(getClass(), check, expectedMsg, exitCode)
+
+  override def throwThis(): Unit = throwSelf(None)
 }
 
 case class NonzeroExitCode(override val progName: String, override val args: Seq[String],
@@ -87,8 +108,9 @@ case class ZeroExitCode(override val progName: String, override val args: Seq[St
 class ExceptionOnRun(override val progName: String, override val args: Seq[String],
                      override val stdout: String, override val stderr: String,
                      val e: Exception)
-  extends RuntimeException(s"Error while running $progName with args" +
-    s" $args\nstdout: $stdout\nstderr: $stderr", e) with RunOutput
+  extends RunOutput {
+  override def throwThis(): Unit = throwSelf(Some(e))
+}
 
 case class IOExceptionOnRun(override val progName: String, override val args: Seq[String],
                        override val stdout: String, override val stderr: String,
