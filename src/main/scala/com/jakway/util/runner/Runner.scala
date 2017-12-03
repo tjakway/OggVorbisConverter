@@ -76,9 +76,9 @@ abstract class ProgramOutput(override val progName: String, override val args: S
 {
   //force subclasses to override the relevant parameters of the exit code check
   def check: Int => Boolean
-  val expectedMsg: String
+  def getExpectedMsg(): String
 
-  RunOutput.assertExitCode(getClass(), check, expectedMsg, exitCode)
+  RunOutput.assertExitCode(getClass(), check, getExpectedMsg(), exitCode)
 
   override def throwThis(): Unit = throwSelf(None)
 }
@@ -89,7 +89,7 @@ case class NonzeroExitCode(override val progName: String, override val args: Seq
   extends ProgramOutput(progName, args, stdout, stderr, exitCode)
 {
   override def check = _ != 0
-  override val expectedMsg = "nonzero exit code"
+  override def getExpectedMsg() = "nonzero exit code"
 }
 
 //used to represent success
@@ -100,7 +100,7 @@ case class ZeroExitCode(override val progName: String, override val args: Seq[St
 {
 
   override def check = _ == 0
-  override val expectedMsg = "zero exit code"
+  override def getExpectedMsg() = "zero exit code"
 }
 
 //exceptional subclasses
@@ -154,9 +154,9 @@ object Runner {
       case Failure(e: IOException) => IOExceptionOnRun(_, _, _, _, e)
       case Failure(e: Exception) =>   new ExceptionOnRun(_, _, _, _, e)
       case Success(exitCode)
-          if exitCode == 0       =>   NonzeroExitCode(_, _, _, _, exitCode)
+          if exitCode == 0       =>   ZeroExitCode(_, _, _, _, exitCode)
       case Success(exitCode)
-          if exitCode != 0       =>   ZeroExitCode(_, _, _, _, exitCode)
+          if exitCode != 0       =>   NonzeroExitCode(_, _, _, _, exitCode)
     }
 
     mkRunOutput(progName, args, stdout, stderr)
