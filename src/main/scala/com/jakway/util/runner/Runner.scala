@@ -1,6 +1,6 @@
 package com.jakway.util.runner
 
-import java.io.{File, IOException}
+import java.io.{File, IOException, InputStream}
 
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -166,5 +166,53 @@ object Runner {
       logger.debug(s"Ran $progName with args $args, stdout: $stdout, stderr: $stderr")
     }
     mkRunOutput(progName, args, stdout, stderr)
+  }
+}
+
+class SeqStringInputStream[A](var seq: Seq[String], val charset: String = "UTF-8") extends java.io.InputStream
+{
+  private var curPos: Int = 0
+  private var curItemRef: Option[Array[Byte]] = None
+
+  private def nextItem(): Unit = {
+    seq.headOption match {
+      case Some(i) => {
+        curItemRef = Some(i.getBytes(charset))
+      }
+      case None => {
+        curItemRef = None
+      }
+    }
+    curPos = 0
+    seq = tailOption(seq).getOrElse(Seq())
+  }
+
+  //not in the scala standard library for some reason
+  private def tailOption[A](x: Seq[A]): Option[Seq[A]] = {
+    if(x.length > 1) {
+      Some(x.tail)
+    } else {
+      None
+    }
+  }
+
+  override def read(): Int = curItemRef match {
+    case Some(bytes) => {
+      val readPos = curPos
+      curPos = curPos + 1
+
+      if(readPos == bytes.length) {
+        //need to get the next item
+        nextItem()
+        //then try to read from that
+        read()
+      } else {
+
+      }
+    }
+
+    case None => {
+
+    }
   }
 }
