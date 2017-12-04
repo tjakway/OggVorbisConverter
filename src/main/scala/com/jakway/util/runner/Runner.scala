@@ -2,6 +2,8 @@ package com.jakway.util.runner
 
 import java.io.{File, IOException}
 
+import org.slf4j.{Logger, LoggerFactory}
+
 import scala.sys.process.{Process, ProcessLogger}
 import scala.util.{Failure, Success, Try}
 
@@ -122,11 +124,12 @@ case class IOExceptionOnRun(override val progName: String, override val args: Se
 
 object Runner {
 
+  val logger: Logger = LoggerFactory.getLogger(getClass())
 
   //TODO: add cwd to RunOutput & subclasses
   //we have it, might as well include it
-  def run(progName: String, args: Seq[String], cwd: Option[File] = None): RunOutput
-  = {
+  def run(progName: String, args: Seq[String], logOutput: Boolean = false, cwd: Option[File] = None): RunOutput
+    = {
     var stdout = ""
     var stderr = ""
 
@@ -159,6 +162,9 @@ object Runner {
           if exitCode != 0       =>   NonzeroExitCode(_, _, _, _, exitCode)
     }
 
+    if(logOutput) {
+      logger.debug(s"Ran $progName with args $args, stdout: $stdout, stderr: $stderr")
+    }
     mkRunOutput(progName, args, stdout, stderr)
   }
 }
