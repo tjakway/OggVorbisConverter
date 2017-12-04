@@ -1,4 +1,4 @@
-package com.jakway.tools
+package com.jakway.util
 
 import java.io.{PrintWriter, StringWriter}
 

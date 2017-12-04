@@ -1,6 +1,6 @@
 package com.jakway.util.runner
 
-import java.io.{File, IOException, InputStream}
+import java.io.{ByteArrayInputStream, File, IOException, InputStream => JInputStream}
 
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -126,9 +126,12 @@ object Runner {
 
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
+  val emptyInputStream: JInputStream = new ByteArrayInputStream(Array.empty[Byte])
+
   //TODO: add cwd to RunOutput & subclasses
   //we have it, might as well include it
-  def run(progName: String, args: Seq[String], logOutput: Boolean = false, cwd: Option[File] = None): RunOutput
+  def run(progName: String, args: Seq[String], logOutput: Boolean = false, cwd: Option[File] = None,
+          stdin: JInputStream = emptyInputStream): RunOutput
     = {
     var stdout = ""
     var stderr = ""
@@ -150,6 +153,8 @@ object Runner {
       //run the program
       //don't connect stdin
       Process(Seq(progName) ++ args, cwd)
+        //connect stdin
+        .#<(stdin)
         .run(processLogger, false)
         //block until it returns
         .exitValue()

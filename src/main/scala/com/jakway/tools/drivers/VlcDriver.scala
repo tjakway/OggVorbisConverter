@@ -3,7 +3,7 @@ package com.jakway.tools.drivers
 import java.io.File
 import java.nio.file.Files
 
-import com.jakway.tools.{MusicFileVisitor, Util}
+import com.jakway.tools.MusicFileVisitor
 import com.jakway.util.runner.{CheckCommandExists, Runner}
 import org.slf4j.{Logger, LoggerFactory}
 

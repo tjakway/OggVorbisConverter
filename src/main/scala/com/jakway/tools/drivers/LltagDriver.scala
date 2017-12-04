@@ -1,5 +1,8 @@
 package com.jakway.tools.drivers
 
+import java.io.ByteArrayInputStream
+
+import com.jakway.util.InfiniteStringStream
 import com.jakway.util.runner._
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -19,8 +22,10 @@ class LltagDriver
   val tagRegexp: Regex = "(?u)[A-Z]=.+".r
 
   val commonOptions: Seq[String] = Seq(
+    "--yes",
+    "--spaces",
     "--ogg",
-    "--yes"
+    "--edit"
   )
 
   /**
@@ -29,7 +34,7 @@ class LltagDriver
     * @return
     */
   private def runInput(in: String): Try[ProgramOutput] =
-    Runner.run(programName, Seq("-S", in)).toTry
+    Runner.run(programName, Seq("-S", in), true).toTry
 
   private def parseInput(in: String, o: ProgramOutput): Seq[String] = o match {
     case x: ZeroExitCode => {
@@ -74,10 +79,11 @@ class LltagDriver
     else {
       val args = commonOptions ++ kvPairs.flatMap {
         case thisPair => Seq("--tag", thisPair)
-      }
+          //don't forget the output file
+      } ++ Seq(out)
 
       //ignore the output
-      Runner.run(programName, args).toTry.map(_ => {})
+      Runner.run(programName, args, true, stdin = new InfiniteStringStream("y")).toTry.map(_ => {})
     }
   }
 
@@ -89,3 +95,5 @@ class LltagDriver
     logger.info(s"Copied tags $in -> $out")
   }
 }
+
+

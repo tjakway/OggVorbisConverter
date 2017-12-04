@@ -4,6 +4,7 @@ import java.io.IOException
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{FileVisitResult, Path}
 
+import com.jakway.util.Util
 import org.slf4j.{Logger, LoggerFactory}
 
 class MusicFileVisitor extends java.nio.file.FileVisitor[Path] {
