@@ -1,0 +1,130 @@
+12:40:44.535 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/07 At Least I Have Nothing.flac), stdout: /home/thomas/test_input/07 At Least I Have Nothing.flac:
+  ARTIST=Saint Motel
+  TITLE=At Least I Have Nothing
+  ALBUM=Voyeur
+  NUMBER=07
+  GENRE=Rock
+  DATE=2012
+  TOTALDISCS=1
+  DISCNUMBER=1
+  TOTALTRACKS=11
+, stderr: 
+12:40:44.657 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Saint Motel, --tag, TITLE=At Least I Have Nothing, --tag, ALBUM=Voyeur, --tag, NUMBER=07, --tag, GENRE=Rock, --tag, DATE=2012, --tag, TOTALDISCS=1, --tag, DISCNUMBER=1, --tag, TOTALTRACKS=11, /home/thomas/test_output/07 At Least I Have Nothing.ogg), stdout: 
+Processing file "/home/thomas/test_output/07 At Least I Have Nothing.ogg"...
+  Tagging.
+, stderr: 
+12:40:44.658 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/07 At Least I Have Nothing.flac -> /home/thomas/test_output/07 At Least I Have Nothing.ogg
+12:42:30.357 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/11-01 French 3  Unit 5.m4a), stdout: /home/thomas/test_input/11-01 French 3  Unit 5.m4a:
+  Skipping this unknown-type file.
+, stderr: 
+12:42:30.358 [main] WARN com.jakway.tools.drivers.LltagDriver - No key value pairs for /home/thomas/test_input/11-01 French 3  Unit 5.m4a after filtering, original program output: ZeroExitCode(lltag,List(-S, /home/thomas/test_input/11-01 French 3  Unit 5.m4a),/home/thomas/test_input/11-01 French 3  Unit 5.m4a:
+  Skipping this unknown-type file.
+,,0)
+12:42:30.358 [main] INFO com.jakway.tools.drivers.LltagDriver - Skipping tags for /home/thomas/test_output/11-01 French 3  Unit 5.ogg because non exist
+12:42:30.358 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/11-01 French 3  Unit 5.m4a -> /home/thomas/test_output/11-01 French 3  Unit 5.ogg
+12:42:58.656 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/04 Longview.m4a), stdout: /home/thomas/test_input/04 Longview.m4a:
+  Skipping this unknown-type file.
+, stderr: 
+12:42:58.657 [main] WARN com.jakway.tools.drivers.LltagDriver - No key value pairs for /home/thomas/test_input/04 Longview.m4a after filtering, original program output: ZeroExitCode(lltag,List(-S, /home/thomas/test_input/04 Longview.m4a),/home/thomas/test_input/04 Longview.m4a:
+  Skipping this unknown-type file.
+,,0)
+12:42:58.657 [main] INFO com.jakway.tools.drivers.LltagDriver - Skipping tags for /home/thomas/test_output/04 Longview.ogg because non exist
+12:42:58.657 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/04 Longview.m4a -> /home/thomas/test_output/04 Longview.ogg
+12:43:21.483 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/05 On My Own.mp3), stdout: /home/thomas/test_input/05 On My Own.mp3:
+  ARTIST=Three Days Grace
+  TITLE=On My Own
+  ALBUM=One X
+  NUMBER=5
+  GENRE=Rock
+  DATE=2006
+  COMMENT=By Jon
+, stderr: 
+12:43:21.570 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Three Days Grace, --tag, TITLE=On My Own, --tag, ALBUM=One X, --tag, NUMBER=5, --tag, GENRE=Rock, --tag, DATE=2006, --tag, COMMENT=By Jon, /home/thomas/test_output/05 On My Own.ogg), stdout: 
+Processing file "/home/thomas/test_output/05 On My Own.ogg"...
+  Tagging.
+, stderr: 
+12:43:21.571 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/05 On My Own.mp3 -> /home/thomas/test_output/05 On My Own.ogg
+12:43:36.278 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/06 Happy Jack.m4a), stdout: /home/thomas/test_input/06 Happy Jack.m4a:
+  Skipping this unknown-type file.
+, stderr: 
+12:43:36.278 [main] WARN com.jakway.tools.drivers.LltagDriver - No key value pairs for /home/thomas/test_input/06 Happy Jack.m4a after filtering, original program output: ZeroExitCode(lltag,List(-S, /home/thomas/test_input/06 Happy Jack.m4a),/home/thomas/test_input/06 Happy Jack.m4a:
+  Skipping this unknown-type file.
+,,0)
+12:43:36.278 [main] INFO com.jakway.tools.drivers.LltagDriver - Skipping tags for /home/thomas/test_output/06 Happy Jack.ogg because non exist
+12:43:36.278 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/06 Happy Jack.m4a -> /home/thomas/test_output/06 Happy Jack.ogg
+12:44:04.312 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/03 Finger Twist And Split 2.mp3), stdout: /home/thomas/test_input/03 Finger Twist And Split 2.mp3:
+  ARTIST=Cute Is What We Aim For
+  TITLE=Finger twist and split
+  ALBUM=The Same Old Blood Rush with a
+  NUMBER=3
+  GENRE=Alternative
+  DATE=2006
+  COMMENT= 000029D3 00000000 0000E964
+, stderr: 
+12:44:04.428 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Cute Is What We Aim For, --tag, TITLE=Finger twist and split, --tag, ALBUM=The Same Old Blood Rush with a, --tag, NUMBER=3, --tag, GENRE=Alternative, --tag, DATE=2006, --tag, COMMENT= 000029D3 00000000 0000E964, /home/thomas/test_output/03 Finger Twist And Split 2.ogg), stdout: 
+Processing file "/home/thomas/test_output/03 Finger Twist And Split 2.ogg"...
+  Tagging.
+, stderr: 
+12:44:04.429 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/03 Finger Twist And Split 2.mp3 -> /home/thomas/test_output/03 Finger Twist And Split 2.ogg
+12:44:50.199 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).mp3), stdout: /home/thomas/test_input/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).mp3:
+  ARTIST=Wax Tailor
+  TITLE=We Be Feat. Ursula Rucker (DJ
+  ALBUM=We Be Bw There is Danger CDS
+  NUMBER=3
+  GENRE=Trip-Hop
+  DATE=2008
+  COMMENT=Try before you buy!
+, stderr: 
+12:44:50.309 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Wax Tailor, --tag, TITLE=We Be Feat. Ursula Rucker (DJ, --tag, ALBUM=We Be Bw There is Danger CDS, --tag, NUMBER=3, --tag, GENRE=Trip-Hop, --tag, DATE=2008, --tag, COMMENT=Try before you buy!, /home/thomas/test_output/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).ogg), stdout: 
+Processing file "/home/thomas/test_output/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).ogg"...
+  Tagging.
+, stderr: 
+12:44:50.309 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).mp3 -> /home/thomas/test_output/03-wax_tailor-we_be_feat._ursula_rucker_(dj_vadim_remix).ogg
+12:46:18.910 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/16 DARE (DFA Remix).flac), stdout: /home/thomas/test_input/16 DARE (DFA Remix).flac:
+  ARTIST=Gorillaz
+  TITLE=DARE (DFA Remix)
+  ALBUM=D-Sides
+  NUMBER=1
+  GENRE=Unknown genre
+  DATE=2007
+  DISCNUMBER=2
+, stderr: 
+12:46:19.050 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Gorillaz, --tag, TITLE=DARE (DFA Remix), --tag, ALBUM=D-Sides, --tag, NUMBER=1, --tag, GENRE=Unknown genre, --tag, DATE=2007, --tag, DISCNUMBER=2, /home/thomas/test_output/16 DARE (DFA Remix).ogg), stdout: 
+Processing file "/home/thomas/test_output/16 DARE (DFA Remix).ogg"...
+  Tagging.
+, stderr: 
+12:46:19.050 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/16 DARE (DFA Remix).flac -> /home/thomas/test_output/16 DARE (DFA Remix).ogg
+12:46:51.768 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/020 - Bretonlabs - ENVY.mp3), stdout: /home/thomas/test_input/020 - Bretonlabs - ENVY.mp3:
+  ARTIST=Bretonlabs
+  TITLE=ENVY
+  ALBUM=BIRP! December 2013
+  NUMBER=20
+  DATE=2013
+  COMMENT=birp.fm
+, stderr: 
+12:46:51.870 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Bretonlabs, --tag, TITLE=ENVY, --tag, ALBUM=BIRP! December 2013, --tag, NUMBER=20, --tag, DATE=2013, --tag, COMMENT=birp.fm, /home/thomas/test_output/020 - Bretonlabs - ENVY.ogg), stdout: 
+Processing file "/home/thomas/test_output/020 - Bretonlabs - ENVY.ogg"...
+  Tagging.
+, stderr: 
+12:46:51.870 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/020 - Bretonlabs - ENVY.mp3 -> /home/thomas/test_output/020 - Bretonlabs - ENVY.ogg
+12:47:28.641 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/09 If You Were There, Beware.mp3), stdout: /home/thomas/test_input/09 If You Were There, Beware.mp3:
+  ARTIST=Arctic Monkeys
+  TITLE=If You Were There, Beware
+  ALBUM=Favourite Worst Nightmare
+  NUMBER=9
+  GENRE=Alternative
+  DATE=2007
+, stderr: 
+12:47:28.733 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(--yes, --spaces, --ogg, --tag, ARTIST=Arctic Monkeys, --tag, TITLE=If You Were There, Beware, --tag, ALBUM=Favourite Worst Nightmare, --tag, NUMBER=9, --tag, GENRE=Alternative, --tag, DATE=2007, /home/thomas/test_output/09 If You Were There, Beware.ogg), stdout: 
+Processing file "/home/thomas/test_output/09 If You Were There, Beware.ogg"...
+  Tagging.
+, stderr: 
+12:47:28.733 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/09 If You Were There, Beware.mp3 -> /home/thomas/test_output/09 If You Were There, Beware.ogg
+12:48:07.649 [main] DEBUG com.jakway.util.runner.Runner$ - Ran lltag with args List(-S, /home/thomas/test_input/14 Almost Famous.m4a), stdout: /home/thomas/test_input/14 Almost Famous.m4a:
+  Skipping this unknown-type file.
+, stderr: 
+12:48:07.650 [main] WARN com.jakway.tools.drivers.LltagDriver - No key value pairs for /home/thomas/test_input/14 Almost Famous.m4a after filtering, original program output: ZeroExitCode(lltag,List(-S, /home/thomas/test_input/14 Almost Famous.m4a),/home/thomas/test_input/14 Almost Famous.m4a:
+  Skipping this unknown-type file.
+,,0)
+12:48:07.650 [main] INFO com.jakway.tools.drivers.LltagDriver - Skipping tags for /home/thomas/test_output/14 Almost Famous.ogg because non exist
+12:48:07.650 [main] INFO com.jakway.tools.drivers.LltagDriver - Copied tags /home/thomas/test_input/14 Almost Famous.m4a -> /home/thomas/test_output/14 Almost Famous.ogg
