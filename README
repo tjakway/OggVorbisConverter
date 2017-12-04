@@ -1,13 +1,3 @@
 REQUIREMENTS:
     * vlc on PATH
     * lltag on PATH
-
-
-TODO: need to copy metadata!
-    transcoding loses all audio metadata
-    probably find some tool to copy from one music file to another and just run it after the VLC command
-
-copying relevant metdata:
-    use lltag
-
-    **need tests**
