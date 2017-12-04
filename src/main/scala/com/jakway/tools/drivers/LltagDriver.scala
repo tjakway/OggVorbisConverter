@@ -25,7 +25,6 @@ class LltagDriver
     "--yes",
     "--spaces",
     "--ogg",
-    "--edit"
   )
 
   /**
@@ -83,7 +82,7 @@ class LltagDriver
       } ++ Seq(out)
 
       //ignore the output
-      Runner.run(programName, args, true, stdin = new InfiniteStringStream("y")).toTry.map(_ => {})
+      Runner.run(programName, args, true).toTry.map(_ => {})
     }
   }
 
