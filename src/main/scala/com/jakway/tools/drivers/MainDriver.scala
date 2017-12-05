@@ -23,7 +23,7 @@ class MainDriver(val inputDir: File, val outputDir: File) {
   def logOnError = MainDriver.logOnError(logger) _
 
   val vlcDriver = new VlcDriver()
-  val lltagDriver = new LltagDriver()
+  val lltagDriver = new LltagDriver(verbose = true)
 
   val outputExtension = ".ogg"
 

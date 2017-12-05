@@ -13,13 +13,13 @@ object LltagDriver {
   val programName = "lltag"
 }
 
-class LltagDriver
+class LltagDriver(val verbose: Boolean = false)
   extends CheckCommandExists(LltagDriver.programName) {
   import LltagDriver._
 
   private val logger: Logger = LoggerFactory.getLogger(getClass())
 
-  val exiftoolDriver = new ExiftoolDriver(true)
+  val exiftoolDriver = new ExiftoolDriver()
 
   val tagRegexp: Regex = "(?u)[A-Z]=.+".r
 
@@ -43,7 +43,7 @@ class LltagDriver
     * @return
     */
   private def runLltagInput(in: String): Try[ProgramOutput] =
-    Runner.run(programName, Seq("-S", in), true).toTry
+    Runner.run(programName, Seq("-S", in), verbose).toTry
 
   private def parseLltagInput(in: String, o: ProgramOutput): Seq[String] = o match {
     case x: ZeroExitCode => {
@@ -92,7 +92,7 @@ class LltagDriver
       } ++ Seq(out)
 
       //ignore the output
-      Runner.run(programName, args, true).toTry.map(_ => {})
+      Runner.run(programName, args, verbose).toTry.map(_ => {})
     }
   }
 
@@ -106,7 +106,7 @@ class LltagDriver
         runLltagInput(in).map(parseLltagInput(in, _))
       } else {
         //otherwise run exiftool
-        exiftoolDriver.run(in)
+        exiftoolDriver.run(in, verbose)
       }
     }
 
@@ -145,7 +145,7 @@ object ExiftoolDriver {
 /**
   * Only used by LltagDriver
   */
-class ExiftoolDriver(val verbose: Boolean = false)
+class ExiftoolDriver
   extends CheckCommandExists(ExiftoolDriver.programName) {
   import ExiftoolDriver._
 
@@ -192,8 +192,8 @@ class ExiftoolDriver(val verbose: Boolean = false)
     }
   }
 
-  def run(in: String): Try[Seq[String]] = {
-    val res = Runner.run(programName, Seq(in), logOutput = true)
+  def run(in: String, verbose: Boolean = false): Try[Seq[String]] = {
+    val res = Runner.run(programName, Seq(in), logOutput = verbose)
       .toTry
       //extract the tags from exiftool's stdout
       .map(_.stdout.lines.toSeq.flatMap(extractTag))
