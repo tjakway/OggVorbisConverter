@@ -169,11 +169,14 @@ class ExiftoolDriver
       throw ExiftoolDriverException(s"${matches.length} matches in $line for " +
         s"${rgxPattern}, expected 1")
     } else {
-      matches
-        .head
-        //get group(1) because group(0) is always the entire string
-        .group(1)
-        .trim
+      val firstMatch = matches.head
+
+      if(firstMatch.groupCount != 1) {
+        throw ExiftoolDriverException(s"Expected groupCount=1 in regex $rgxPattern, got ${firstMatch.groupCount}")
+      }
+
+      //get group(1) because group(0) is always the entire string
+      firstMatch.group(1).trim
     }
   }
 
