@@ -19,7 +19,7 @@ class LltagDriver
 
   private val logger: Logger = LoggerFactory.getLogger(getClass())
 
-  val exiftoolDriver = new ExiftoolDriver()
+  val exiftoolDriver = new ExiftoolDriver(true)
 
   val tagRegexp: Regex = "(?u)[A-Z]=.+".r
 
@@ -145,7 +145,7 @@ object ExiftoolDriver {
 /**
   * Only used by LltagDriver
   */
-class ExiftoolDriver
+class ExiftoolDriver(val verbose: Boolean = false)
   extends CheckCommandExists(ExiftoolDriver.programName) {
   import ExiftoolDriver._
 
@@ -192,14 +192,20 @@ class ExiftoolDriver
     }
   }
 
-  def run(in: String): Try[Seq[String]] =
-    Runner.run(programName, Seq(in))
-    .toTry
+  def run(in: String): Try[Seq[String]] = {
+    val res = Runner.run(programName, Seq(in), logOutput = true)
+      .toTry
       //extract the tags from exiftool's stdout
-    .map(_.stdout.lines.toSeq.flatMap(extractTag))
+      .map(_.stdout.lines.toSeq.flatMap(extractTag))
       //Try -> Seq[String, String] becomes
       //Try -> Seq[String]
-    .map(_.map(v => s"${v._1}=${v._2}"))
+      .map(_.map(v => s"${v._1}=${v._2}"))
+
+    if(verbose) {
+      res.foreach(tags => logger.debug(s"Collected tags $tags from $in"))
+    }
+    res
+  }
 }
 
 
