@@ -141,6 +141,11 @@ object ExiftoolDriver {
          ("Date/Time Original" -> "DATE")
       }
     }
+
+  class ExiftoolDriverException(private val msg: String)
+    extends RuntimeException(msg)
+
+  case class RegexException(val msg: String) extends ExiftoolDriverException(msg)
 }
 
 /**
@@ -149,9 +154,6 @@ object ExiftoolDriver {
 class ExiftoolDriver
   extends CheckCommandExists(ExiftoolDriver.programName) {
   import ExiftoolDriver._
-
-  case class ExiftoolDriverException(val msg: String)
-    extends RuntimeException(msg)
 
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
@@ -185,13 +187,13 @@ class ExiftoolDriver
     //because otherwise it will represent itself as a length-1 "empty iterator"
     val matches = tagValueRegex.findAllMatchIn(line).toSeq
     if(matches.length != 1) {
-      throw ExiftoolDriverException(s"${matches.length} matches in $line for " +
+      throw RegexException(s"${matches.length} matches in $line for " +
         s"${rgxPattern}, expected 1")
     } else {
       val firstMatch = matches.head
 
       if(firstMatch.groupCount != 1) {
-        throw ExiftoolDriverException(s"Expected groupCount=1 in regex $rgxPattern, got ${firstMatch.groupCount}")
+        throw RegexException(s"Expected groupCount=1 in regex $rgxPattern, got ${firstMatch.groupCount}")
       }
 
       //get group(1) because group(0) is always the entire string
@@ -204,7 +206,10 @@ class ExiftoolDriver
       //if we haven't found a tag in this line yet,
       case (None, (exifTagName, lltagName)) => {
         //check if the current tag matches
-        if(line.startsWith(exifTagName)) {
+        //split up the tag and value at the colon to prevent
+        //bad stem matches
+        //e.g. "Album Artist" vs. "Album"
+        if(line.split(":", 0).head.trim.startsWith(exifTagName)) {
           //and if so extract the value
           Some(lltagName, extractTagValue(line))
         } else {
