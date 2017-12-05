@@ -95,4 +95,83 @@ class LltagDriver
   }
 }
 
+object ExiftoolDriver {
+  val programName = "exiftool"
+
+  val tagList: Map[String, String] = {
+    Seq("Artist",
+          "Title",
+          "Album",
+          "Date",
+          "Comment",
+          "Genre",
+          "Number")
+      .map(tag => (tag, tag.toUpperCase))
+      .toMap + {
+          //non-obvious mappings
+          //exiftool has multiple ways to name the equivalent lltag value
+         ("Discnumber" -> "NUMBER")
+         ("Track Number" -> "NUMBER")
+         ("Track" -> "NUMBER")
+         ("Year" -> "DATE")
+         ("Date/Time Original" -> "DATE")
+      }
+    }
+}
+
+/**
+  * Only used by LltagDriver
+  */
+class ExiftoolDriver
+  extends CheckCommandExists(ExiftoolDriver.programName) {
+  import ExiftoolDriver._
+
+  case class ExiftoolDriverException(val msg: String)
+    extends RuntimeException(msg)
+
+  val logger: Logger = LoggerFactory.getLogger(getClass())
+
+  val tagValueRegex: Regex = """(?U)(?<=\s*:)$""".r
+
+  private def extractTagValue(line: String): String = {
+    val matches = tagValueRegex.findAllMatchIn(line)
+    if(matches.length != 1) {
+      throw ExiftoolDriverException(s"Multiple matches in $line for ${tagValueRegex.pattern.pattern()}")
+    } else {
+      //get the first match
+      matches.toSeq.head.group(0)
+    }
+  }
+
+  private def extractTag(line: String): Option[(String, String)] = {
+    tagList.foldLeft(None: Option[(String, String)]) {
+      //if we haven't found a tag in this line yet,
+      case (None, (exifTagName, lltagName)) => {
+        //check if the current tag matches
+        if(line.startsWith(exifTagName)) {
+          //and if so extract the value
+          Some(lltagName, extractTagValue(line))
+        } else {
+          None
+        }
+      }
+
+        //sanity check--shouldn't match another tag once we've already extracted a tag value
+      case (Some(tagValuePair), (exifTagName, _))
+        if line.startsWith(exifTagName) => {
+        logger.warn(s"exiftool output line $line matches multiple tags ($exifTagName this iteration), " +
+          s"using $tagValuePair")
+        Some(tagValuePair)
+      }
+
+        //otherwise skip this pair
+      case (Some(x), _) => Some(x)
+    }
+  }
+
+  def run(in: String): Try[Seq[String]] = Try {
+    ??? //TODO
+  }
+}
+
 
