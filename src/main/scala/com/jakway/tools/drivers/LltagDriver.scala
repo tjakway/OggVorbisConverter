@@ -201,6 +201,9 @@ class ExiftoolDriver
     }
   }
 
+  def matchesTagName(line: String, tagName: String) =
+    line.split(":", 0).head.trim.startsWith(tagName)
+
   private def extractTag(line: String): Option[(String, String)] = {
     tagList.foldLeft(None: Option[(String, String)]) {
       //if we haven't found a tag in this line yet,
@@ -209,7 +212,7 @@ class ExiftoolDriver
         //split up the tag and value at the colon to prevent
         //bad stem matches
         //e.g. "Album Artist" vs. "Album"
-        if(line.split(":", 0).head.trim.startsWith(exifTagName)) {
+        if(matchesTagName(line, exifTagName)) {
           //and if so extract the value
           Some(lltagName, extractTagValue(line))
         } else {
@@ -219,7 +222,7 @@ class ExiftoolDriver
 
         //sanity check--shouldn't match another tag once we've already extracted a tag value
       case (Some(tagValuePair), (exifTagName, _))
-        if line.startsWith(exifTagName) => {
+        if matchesTagName(line, exifTagName) => {
         logger.warn(s"exiftool output line $line matches multiple tags ($exifTagName this iteration), " +
           s"using $tagValuePair")
         Some(tagValuePair)
