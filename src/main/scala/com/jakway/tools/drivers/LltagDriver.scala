@@ -155,30 +155,25 @@ class ExiftoolDriver
 
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
-  val tagValueGroupName: String = "tagvalue"
   val tagValueRegex: Regex =
-    new Regex("""(?U)(?:^\s*\p{Alnum}+\s*:)(?<""" + tagValueGroupName + """>.*$)""")
+    new Regex("""(?Us)(?:^\s*\p{Alpha}+\s*:)(.*)""")
 
   def extractTagValue(line: String): String = {
     //print the regex pattern in debugging messages
     lazy val rgxPattern: String = tagValueRegex.pattern.pattern()
 
-    val matches = tagValueRegex.findAllMatchIn(line)
+    //need to convert the MatchIterator to a Seq before doing anything else
+    //because otherwise it will represent itself as a length-1 "empty iterator"
+    val matches = tagValueRegex.findAllMatchIn(line).toSeq
     if(matches.length != 1) {
       throw ExiftoolDriverException(s"${matches.length} matches in $line for " +
         s"${rgxPattern}, expected 1")
     } else {
-      //extract & verify the first match
-      val firstMatch = matches
-        .toSeq
-        .headOption
-        .getOrElse(throw ExiftoolDriverException(s"No matches in $line for pattern $rgxPattern"))
-
-      if(firstMatch.subgroups != Seq(tagValueGroupName)) {
-        throw new ExiftoolDriverException(s"${firstMatch.subgroups} subgroups in $line," +
-          s"expected only $tagValueGroupName")
-      }
-      firstMatch.group(firstMatch.subgroups.head)
+      matches
+        .head
+        //get group(1) because group(0) is always the entire string
+        .group(1)
+        .trim
     }
   }
 
