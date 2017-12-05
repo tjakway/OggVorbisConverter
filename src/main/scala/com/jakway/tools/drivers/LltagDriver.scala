@@ -110,11 +110,12 @@ class LltagDriver(val verbose: Boolean = false)
       }
     }
 
-    for {
+    val res = for {
       input <- getInput
       _ <- runOutput(input, out)
+      _ <- Try(logger.info(s"Copied tags $in -> $out"))
     } yield { }
-    logger.info(s"Copied tags $in -> $out")
+    res.get //throw on error
   }
 }
 
