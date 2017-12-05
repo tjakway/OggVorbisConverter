@@ -19,6 +19,8 @@ class LltagDriver
 
   private val logger: Logger = LoggerFactory.getLogger(getClass())
 
+  val exiftoolDriver = new ExiftoolDriver()
+
   val tagRegexp: Regex = "(?u)[A-Z]=.+".r
 
   val commonOptions: Seq[String] = Seq(
@@ -27,15 +29,23 @@ class LltagDriver
     "--ogg",
   )
 
+
+
+  //lltag only works with MP3, Ogg Vorbis and FLAC
+  val lltagCompatibleExtensions = Seq("mp3", "ogg", "flac")
+
+  def hasLltagCompatibleExtension(in: String): Boolean =
+    lltagCompatibleExtensions.exists(in.toLowerCase.endsWith(_))
+
   /**
     * read in the key-value pairs
     * @param in
     * @return
     */
-  private def runInput(in: String): Try[ProgramOutput] =
+  private def runLltagInput(in: String): Try[ProgramOutput] =
     Runner.run(programName, Seq("-S", in), true).toTry
 
-  private def parseInput(in: String, o: ProgramOutput): Seq[String] = o match {
+  private def parseLltagInput(in: String, o: ProgramOutput): Seq[String] = o match {
     case x: ZeroExitCode => {
       //there's no tailOption
       Try(x.stdout
@@ -86,10 +96,23 @@ class LltagDriver
     }
   }
 
+
   def run(in: String, out: String): Unit = {
+    def getInput = {
+      //run lltag if possible--
+      //supports more tags and less things can go wrong feeding the same tool's
+      //output to its input
+      if(hasLltagCompatibleExtension(in)) {
+        runLltagInput(in).map(parseLltagInput(in, _))
+      } else {
+        //otherwise run exiftool
+        exiftoolDriver.run(in)
+      }
+    }
+
     for {
-      o <- runInput(in)
-      _ <- runOutput(parseInput(in, o), out)
+      input <- getInput
+      _ <- runOutput(input, out)
     } yield { }
     logger.info(s"Copied tags $in -> $out")
   }
