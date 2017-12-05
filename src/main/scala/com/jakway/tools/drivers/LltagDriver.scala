@@ -156,7 +156,7 @@ class ExiftoolDriver
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
   val tagValueRegex: Regex =
-    new Regex("""(?Us)(?:^\s*\p{Alpha}+\s*:)(.*)""")
+    new Regex("""(?Us)(?:^\s*\p{Graph}+\s*:)(.*)""")
 
   def extractTagValue(line: String): String = {
     //print the regex pattern in debugging messages
