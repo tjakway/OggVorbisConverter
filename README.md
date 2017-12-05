@@ -13,3 +13,4 @@ TODO:
         --vlc-args
         --lltag-args
         --exiftool-args
+    * it would really be better to handle exiftool output using xml...
