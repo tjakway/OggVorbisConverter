@@ -22,6 +22,11 @@ class TestRegex extends FlatSpec {
     }
   }
 
+  def assertRegexDoesNotMatch(items: Seq[String]) = {
+    assertThrows[ExiftoolDriver.RegexException](assertRegexMatches(
+      items.map(s => (s, "")).toMap))
+  }
+
   "ExiftoolDriver's Regex" should "match titles" in {
     assertRegexMatches( Map {
         "Title                           : Happy Jack" -> "Happy Jack"
@@ -29,5 +34,12 @@ class TestRegex extends FlatSpec {
         "Title                           : At Least I Have Nothing" ->
             "At Least I Have Nothing"
       })
+  }
+
+  it should "handle confusing stems" in {
+    assertRegexDoesNotMatch(Seq(
+      "Album Artist                : Green Day",
+      "Title   Type                 : Abcdefg "
+    ))
   }
 }
