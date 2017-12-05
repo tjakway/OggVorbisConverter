@@ -169,9 +169,14 @@ class ExiftoolDriver
     }
   }
 
-  def run(in: String): Try[Seq[String]] = Try {
-    ??? //TODO
-  }
+  def run(in: String): Try[Seq[String]] =
+    Runner.run(programName, Seq(in))
+    .toTry
+      //extract the tags from exiftool's stdout
+    .map(_.stdout.lines.toSeq.flatMap(extractTag))
+      //Try -> Seq[String, String] becomes
+      //Try -> Seq[String]
+    .map(_.map(v => s"${v._1}=${v._2}"))
 }
 
 
