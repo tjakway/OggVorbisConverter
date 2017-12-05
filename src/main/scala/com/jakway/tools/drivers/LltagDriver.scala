@@ -207,7 +207,7 @@ class ExiftoolDriver
   private def extractTag(line: String): Option[(String, String)] = {
     tagList.foldLeft(None: Option[(String, String)]) {
       //if we haven't found a tag in this line yet,
-      case (None, (exifTagName, lltagName)) => {
+      case (None, (exifTagName, lltagName)) => Try {
         //check if the current tag matches
         //split up the tag and value at the colon to prevent
         //bad stem matches
@@ -218,7 +218,7 @@ class ExiftoolDriver
         } else {
           None
         }
-      }
+      }.getOrElse(None)
 
         //sanity check--shouldn't match another tag once we've already extracted a tag value
       case (Some(tagValuePair), (exifTagName, _))
