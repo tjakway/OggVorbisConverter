@@ -14,3 +14,4 @@ TODO:
         --lltag-args
         --exiftool-args
     * it would really be better to handle exiftool output using xml...
+    * after converting and tagging, run lltag -S against the output ogg files to check them
