@@ -155,8 +155,27 @@ class ExiftoolDriver
 
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
+  /**
+    * explanation:
+    *  (?Us)     - regex flags, see https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html
+    *               ?U = UNICODE_CASE
+    *               ?s = DOTALL (aka single-line mode)
+    *  (?:       - begin non-capturing group
+    *  ^         - match start of line
+    *  \s*       - match 0 or more whitespace characters
+    *  \p{Graph} - visible characters, i.e. punctuation or alphanumerics
+    *  +         - makes the preceding \p{Graph} match 1 or more characters
+    *  \s*       - see above
+    *  :         - match a literal colon
+    *  )         - end the non-capturing group
+    *  (         - begin a (normal) capturing group
+    *  .         - match anything (NOTE: affected by ?s, which put us in DOTALL mode where . matches line terminators)
+    *  *         - makes the preceding . match 0 or more times
+    *  $         - match end-of-line
+    *  )         - end the capturing group
+    */
   val tagValueRegex: Regex =
-    new Regex("""(?Us)(?:^\s*\p{Graph}+\s*:)(.*)""")
+    new Regex("""(?Us)(?:^\s*\p{Graph}+\s*:)(.*$)""")
 
   def extractTagValue(line: String): String = {
     //print the regex pattern in debugging messages
