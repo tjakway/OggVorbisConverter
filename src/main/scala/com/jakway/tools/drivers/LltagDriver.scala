@@ -155,12 +155,13 @@ class ExiftoolDriver
 
   val logger: Logger = LoggerFactory.getLogger(getClass())
 
-  val tagValueRegex: Regex = """(?U)(?<=\s*:)$""".r
+  val tagValueRegex: Regex = """(?U)(?<=\s*\p{Alnum}+\s*:)$""".r
 
   private def extractTagValue(line: String): String = {
     val matches = tagValueRegex.findAllMatchIn(line)
     if(matches.length != 1) {
-      throw ExiftoolDriverException(s"Multiple matches in $line for ${tagValueRegex.pattern.pattern()}")
+      throw ExiftoolDriverException(s"${matches.length} matches in $line for " +
+        s"${tagValueRegex.pattern.pattern()}, expected 1")
     } else {
       //get the first match
       matches.toSeq.head.group(0)
