@@ -26,7 +26,7 @@ class VlcDriver(onError: Throwable => Unit =
       "-vvv",
       in,
       "--sout",
-      "#transcode{acodec=vorb}:standard{mux=ogg,dst=\"" +
+      "#transcode{acodec=opus}:standard{mux=ogg,dst=\"" +
         //replace a " with \"
         out.replaceAll("\"", "\\\\\"") +
         "\",access=file}",

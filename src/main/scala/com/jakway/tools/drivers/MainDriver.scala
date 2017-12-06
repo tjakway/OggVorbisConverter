@@ -25,7 +25,7 @@ class MainDriver(val inputDir: File, val outputDir: File) {
   val vlcDriver = new VlcDriver()
   val lltagDriver = new LltagDriver(verbose = true)
 
-  val outputExtension = ".ogg"
+  val outputExtension = ".opus"
 
   def getMusicInputFiles(): Try[Seq[String]] = Try {
     if(!inputDir.isDirectory) {
