@@ -8,7 +8,7 @@ REQUIREMENTS:
     ```sudo apt-get install vlc lltag libimage-exiftool-perl```
 
 
-DO:
+TODO:
 * use scopt for real argument handling
 * add flags to pass additional arguments to external tools:
   * --vlc-args
@@ -16,3 +16,4 @@ DO:
   * --exiftool-args
 * it would really be better to handle exiftool output using xml...
 * after converting and tagging, run lltag -S against the output ogg files to check them
+* just copy .ogg files (re-encoding them lowers quality)
