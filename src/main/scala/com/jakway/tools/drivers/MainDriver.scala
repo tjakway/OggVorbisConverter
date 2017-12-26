@@ -1,13 +1,15 @@
 package com.jakway.tools.drivers
 
 import java.io.File
-import java.nio.file.Files
+import java.nio.file.{CopyOption, Files, StandardCopyOption}
 
 import com.jakway.tools.MusicFileVisitor
 import com.jakway.util.Util
 import com.jakway.util.runner.{CheckCommandExists, Runner}
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 object MainDriver {
@@ -53,19 +55,31 @@ class MainDriver(val inputDir: File, val outputDir: File) {
       inputOutputMap <- mapInputToOutput(musicFiles)
     } yield {
       inputOutputMap.foreach {
-        case (input, output) => Try {
-          execEachFile(input, output)
-        } recover {
-          case t: Throwable => onError(t)
-        }
+        case (input, output) => execEachFile(onError)(input, output)
       }
     }
 
   }
 
-  private def execEachFile(in: String, out: String): Unit = {
-    vlcDriver.run(in, out)
-    lltagDriver.run(in, out)
+  private def execEachFile(onError: Throwable => Unit)(in: String, out: String): Future[Unit] = {
+    if(new File(out).exists()) {
+      logger.info(s"Skipping $out, file already exists.")
+      Future.successful()
+    } else {
+      Future {
+        Try {
+          //perform operations on a temporary file then atomically move it to the destination
+          val tmpOutputFile = Files.createTempFile("conv", null)
+          vlcDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
+          lltagDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
+
+          Files.move(tmpOutputFile, new File(out).toPath, StandardCopyOption.ATOMIC_MOVE)
+          logger.debug(s"Finished $out")
+        } recover {
+          case t: Throwable => onError(t)
+        }
+      }
+    }
   }
 }
 
