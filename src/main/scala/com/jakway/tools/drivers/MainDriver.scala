@@ -1,7 +1,7 @@
 package com.jakway.tools.drivers
 
 import java.io.File
-import java.nio.file.{CopyOption, Files, StandardCopyOption}
+import java.nio.file.{CopyOption, Files, Path, StandardCopyOption}
 
 import com.jakway.tools.MusicFileVisitor
 import com.jakway.util.{AtomicTempDirCreator, Util}
@@ -50,20 +50,21 @@ class MainDriver(val inputDir: File, val outputDir: File) {
 
   def run(onError: Throwable => Unit = logOnError): Unit = {
 
-    for {
+    { for {
       musicFiles <- getMusicInputFiles()
       inputOutputMap <- mapInputToOutput(musicFiles)
+      tmpDir <- Try(new AtomicTempDirCreator(outputDir.toPath).get)
     } yield {
       inputOutputMap.foreach {
-        case (input, output) => execEachFile(onError)(input, output)
+        case (input, output) => execEachFile(onError, tmpDir)(input, output)
       }
+    } } recover {
+      case t: Throwable => onError(t)
     }
 
   }
 
-  lazy val tmpDir = new AtomicTempDirCreator(outputDir.toPath).get()
-
-  private def execEachFile(onError: Throwable => Unit)(in: String, out: String): Future[Unit] = {
+  private def execEachFile(onError: Throwable => Unit, tmpDir: Path)(in: String, out: String): Future[Unit] = {
     if(new File(out).exists()) {
       logger.info(s"Skipping $out, file already exists.")
       Future.successful()

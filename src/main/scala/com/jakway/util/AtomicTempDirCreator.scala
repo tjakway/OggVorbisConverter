@@ -13,21 +13,23 @@ class AtomicTempDirCreator(val dstFolder: Path) {
   val prefix: String = "conv"
 
   case class AtomicTempDirCreatorException(msg: String) extends RuntimeException(msg)
-  lazy val tmpDir: Path = {
 
-    lazy val first = Try(Files.createTempDirectory(prefix, null, null))
-    lazy val second = Try(Files.createTempDirectory(dstFolder.getParent(), prefix, null))
+  val tmpDir: Path = {
+
+    lazy val first = Try(Files.createTempDirectory(prefix))
+    lazy val second = Try(Files.createTempDirectory(dstFolder.getParent(), prefix))
 
     if(first.map(atomicMoveSupported(_, dstFolder)).isSuccess) {
       first.get
     } else {
       first.map(Files.deleteIfExists(_))
-      if(!second.map(atomicMoveSupported(_, dstFolder)).isSuccess) {
-        throw AtomicTempDirCreatorException("Could not create a temporary directory that can atomically" +
-          s"move files to $dstFolder")
-      } else {
+      if(second.map(atomicMoveSupported(_, dstFolder)).isSuccess) {
+
         second.map(_.toFile.deleteOnExit())
         second.get
+      } else {
+        throw AtomicTempDirCreatorException("Could not create a temporary directory that can atomically " +
+          s"move files to $dstFolder")
       }
     }
   }
