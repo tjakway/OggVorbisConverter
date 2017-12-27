@@ -17,3 +17,4 @@ TODO:
 * it would really be better to handle exiftool output using xml...
 * after converting and tagging, run lltag -S against the output ogg files to check them
 * just copy .ogg files (re-encoding them lowers quality)
+* should have the temp dir be a CLI option and default to either the system temp dir (if it supports atomic moves to the destination directory) or a generated temp dir on that partition
