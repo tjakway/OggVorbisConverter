@@ -4,7 +4,7 @@ import java.io.File
 import java.nio.file.{CopyOption, Files, StandardCopyOption}
 
 import com.jakway.tools.MusicFileVisitor
-import com.jakway.util.Util
+import com.jakway.util.{AtomicTempDirCreator, Util}
 import com.jakway.util.runner.{CheckCommandExists, Runner}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -61,6 +61,8 @@ class MainDriver(val inputDir: File, val outputDir: File) {
 
   }
 
+  lazy val tmpDir = new AtomicTempDirCreator(outputDir.toPath).get()
+
   private def execEachFile(onError: Throwable => Unit)(in: String, out: String): Future[Unit] = {
     if(new File(out).exists()) {
       logger.info(s"Skipping $out, file already exists.")
@@ -69,7 +71,7 @@ class MainDriver(val inputDir: File, val outputDir: File) {
       Future {
         Try {
           //perform operations on a temporary file then atomically move it to the destination
-          val tmpOutputFile = Files.createTempFile("conv", null)
+          val tmpOutputFile = Files.createTempFile(tmpDir, "conv", null)
           vlcDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
           lltagDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
 

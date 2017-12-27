@@ -26,6 +26,7 @@ class AtomicTempDirCreator(val dstFolder: Path) {
         throw AtomicTempDirCreatorException("Could not create a temporary directory that can atomically" +
           s"move files to $dstFolder")
       } else {
+        second.toFile.deleteOnExit()
         second
       }
     }
