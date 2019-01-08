@@ -1,7 +1,7 @@
 package com.jakway.tools.drivers
 
 import java.io.File
-import java.nio.file.{CopyOption, Files, StandardCopyOption}
+import java.nio.file.{CopyOption, Files, StandardCopyOption, Path}
 
 import com.jakway.tools.MusicFileVisitor
 import com.jakway.util.Util
@@ -73,13 +73,26 @@ class MainDriver(val inputDir: File, val outputDir: File) {
           vlcDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
           lltagDriver.run(in, tmpOutputFile.toFile.getAbsolutePath)
 
-          Files.move(tmpOutputFile, new File(out).toPath, StandardCopyOption.ATOMIC_MOVE)
+          tryAtomicMove(tmpOutputFile, new File(out).toPath)
           logger.debug(s"Finished $out")
         } recover {
           case t: Throwable => onError(t)
         }
       }
     }
+  }
+
+  private def tryAtomicMove(from: Path, to: Path): Unit = {
+     try {
+       Files.move(from, to, StandardCopyOption.ATOMIC_MOVE)
+     } catch {
+       case e: java.nio.file.AtomicMoveNotSupportedException => {
+         logger.warn(s"Could not atomically move $from to $to")
+
+         //retry the move
+         Files.move(from, to)
+       }
+     }
   }
 }
 
